@@ -1,20 +1,14 @@
 
 const mongoose = require("mongoose")
 const connectDB = () => {
-  mongoose
-        .connect("mongodb://localhost:27017/automation", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-    })
-    .then((conn) => {
-      console.log(`db connected: ${conn.connection.host}`);
-    })
-    .catch((err) => {
-      console.log(err);
-      process.exit(1);
-    });
+  mongoose.connect("mongodb://0.0.0.0:27017/automation").then(()=>{
+    console.log("Connected to the database ")
+  }).catch((error) => {
+    console.log(error)
+  })
 };
 
 
 module.exports = connectDB
+
+// connectDB();

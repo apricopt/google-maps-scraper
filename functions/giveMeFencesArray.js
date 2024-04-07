@@ -1,25 +1,21 @@
 async function giveMeFencesArray(page) {
-// let fenceSelector =
-// ".mapsConsumerUiSubviewSectionGm2Placeresultcontainer__result-container.mapsConsumerUiSubviewSectionGm2Placeresultcontainer__two-actions.mapsConsumerUiSubviewSectionGm2Placeresultcontainer__wide-margin";
 
 
-let fenceSelector =".V0h1Ob-haAclf.gd9aEe-LQLjdd.OPZbO-KE6vqe"
+let fenceSelector =".Nv2PK.tH5CWc.THOPZb "
 
 
   // now checking
   let fenceBodyTextSelector =
     ".mapsConsumerUiSubviewSectionGm2Placesummary__text-content";
-// let titleSelector =
-// ".mapsConsumerUiSubviewSectionGm2Placesummary__title-container";
 
 
-    let titleSelector = ".qBF1Pd-haAclf"
+    let titleSelector = ".qBF1Pd.fontHeadlineSmall"
 
-  // info line is a div and will have two children one containing address and second containing the phone number
+// info line is a div and will have two children one containing address and second containing the phone number
 // let infoline = ".mapsConsumerUiSubviewSectionGm2Placesummary__info-line";
-    let infoline = ".ZY2y6b-RWgCYc"
+    let infoline = ".UaQhfb.fontBodyMedium > .W4Efsd"
 
-  let fenceLink = ".place-result-container-place-link";
+  let fenceLink = ".hfpxzc";
 
   let data = await page.evaluate(
     ({ fenceSelector, titleSelector, infoline, fenceLink }) => {
@@ -40,9 +36,11 @@ let fenceSelector =".V0h1Ob-haAclf.gd9aEe-LQLjdd.OPZbO-KE6vqe"
           infoRaw = infoRawElement[1].textContent.trim();
         }
 
-        // let contact = fence.querySelectorAll(infoline)[1].children[2].textContent.trim();
-        //
-        //
+
+        let contact = fence.querySelectorAll(infoline)[1]?.children[1]?.textContent?.trim();
+        
+        // const info = infoRawElement[1].textContent.trim();
+        
 
         let infoArray = infoRaw.split("·");
 
@@ -51,19 +49,17 @@ let fenceSelector =".V0h1Ob-haAclf.gd9aEe-LQLjdd.OPZbO-KE6vqe"
           contactToPush = "none";
         }
 
-        let info = {};
 
         try {
           info = {
-            type: infoArray[1].trim() || "none",
-            address: infoArray[2].trim() || "none",
+            type: infoArray[0].trim() || "none",
+            address: infoArray[1].trim() || "none",
             contact: contactToPush,
           };
         } catch (err) {
           console.log("error while info triming", err.textContent);
         }
 
-        // now grabbing the lat and long from it.
         let firstIndex = link.indexOf("!3d");
         let lastIndex = link.indexOf("?");
         let croppedLatANDlong = link.slice(firstIndex, lastIndex);
@@ -71,11 +67,11 @@ let fenceSelector =".V0h1Ob-haAclf.gd9aEe-LQLjdd.OPZbO-KE6vqe"
           .replace("!3d", "")
           .replace("!4d", ",");
         let ArrayedlatANDLong = latANDLong.split(",");
-        //grabbing  lat and long ends
+        ArrayedlatANDLong[1] = ArrayedlatANDLong[1].split("!")[0];
 
+     
         return { ArrayedlatANDLong, title, info };
       });
-      // let link =  fences[5].querySelector(fenceLink).href;
 
       return arrayofFences;
     },
